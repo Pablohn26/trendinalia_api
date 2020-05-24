@@ -1,0 +1,4 @@
+Flask==1.1.2
+Flask-RESTX==0.2.0
+beautifulsoup4==4.9.1
+requests==2.23.0

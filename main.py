@@ -69,7 +69,7 @@ class Top_DAO(object):
         response = requests.get(url)
         
         # Extracting the source code of the page.
-        data = response.text
+        data = response.content
         
         # Passing the source code to BeautifulSoup to create a BeautifulSoup object for it.
         soup = BeautifulSoup(data, 'lxml')

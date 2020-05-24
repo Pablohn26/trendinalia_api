@@ -67,7 +67,7 @@ class Top_DAO(object):
         '''Get all hashtags of yesterday globally'''
         # Getting the webpage, creating a Response object.
         response = requests.get(url)
-        if response.status_code = 404:
+        if response.status_code == 404:
             api.abort(404, "Data for that day and date don't exist".format(id))
         
         # Extracting the source code of the page.

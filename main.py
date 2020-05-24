@@ -67,13 +67,15 @@ class Top_DAO(object):
         '''Get all hashtags of yesterday globally'''
         # Getting the webpage, creating a Response object.
         response = requests.get(url)
+        if response.status_code = 404:
+            api.abort(404, "Data for that day and date don't exist".format(id))
         
         # Extracting the source code of the page.
-        data = response.content
+        data = response.text
         
         # Passing the source code to BeautifulSoup to create a BeautifulSoup object for it.
         soup = BeautifulSoup(data, 'lxml')
-        
+        print(type(soup))
         # Extracting all the <tr> tags into a list.
         table = soup.find('table').find('tbody')
         rows  = table.find_all('tr')
@@ -83,7 +85,6 @@ class Top_DAO(object):
             self.hashtags.append({'number': fila[0].get_text(), 'hashtag': {'name': fila[1].get_text(), 'time': fila[2].get_text()}})
         
         return self
-        api.abort(404, "Todo {} doesn't exist".format(id))
 
     @ns_top.doc(responses={403: 'Not Authorized'})
     def post(self, id):

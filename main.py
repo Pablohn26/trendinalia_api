@@ -68,14 +68,13 @@ class Top_DAO(object):
         # Getting the webpage, creating a Response object.
         response = requests.get(url)
         if response.status_code == 404:
-            api.abort(404, "Data for that day and date don't exist".format(id))
+            api.abort(404, "Data for country {} and date {} don't exist".format(country,date))
         
         # Extracting the source code of the page.
         data = response.text
         
         # Passing the source code to BeautifulSoup to create a BeautifulSoup object for it.
         soup = BeautifulSoup(data, 'lxml')
-        print(type(soup))
         # Extracting all the <tr> tags into a list.
         table = soup.find('table').find('tbody')
         rows  = table.find_all('tr')
@@ -86,21 +85,40 @@ class Top_DAO(object):
         
         return self
 
-    @ns_top.doc(responses={403: 'Not Authorized'})
-    def post(self, id):
-        api.abort(403)
-    
+    def post(self):
+        api.abort(405)
+    def delete(self):
+        api.abort(405)
+    def put(self):
+        api.abort(405)
+
 DAO = Top_DAO()
 
 
 @ns_top.route('/')
 class TodoList(Resource):
     '''Shows a list of all methods'''
-    @ns_top.doc(params={'country': 'Name of the country. Default: globales','day': 'Date you want to look for. Default yesterday'})
+    @ns_top.doc(params={'country': 'Name of the country. Default: global (globales)','day': 'Date you want to look for. Default yesterday ({})'.format(date)})
     @ns_top.marshal_list_with(response_model)
+    @api.response(200, 'Success')
+    @api.response(404, 'Trending Topic data not found')
     def get(self):
         '''List all hashtags of yesterday globally'''
         return DAO.get(date,country)
+    @api.response(405, 'Method Not Allowed')
+    def post(self, id):
+        '''Method Not Allowed'''
+        return DAO.post()
+    @api.response(405, 'Method Not Allowed')
+    def delete(self, id):
+        '''Method Not Allowed'''
+        return DAO.delete()
+    @api.response(405, 'Method Not Allowed')
+    def put(self, id):
+        '''Method Not Allowed'''
+        return DAO.put()
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
